@@ -1,0 +1,65 @@
+UNITED STATES PATENT
+Patent No.: US 10,625,776 B2
+Date of Patent: Apr. 21, 2020
+
+TITLE: DRIVING ASSISTANCE TECHNIQUE FOR ACTIVE VEHICLE CONTROL
+
+Inventors: Frederic Afonso, Maximilian Batz, Thilo Koenig, Martin Sellen (all of Offenbach am Main, DE)
+Assignee: Honda Research Institute Europe GmbH, Offenbach am Main (DE)
+Filed: March 14, 2017
+Prior Publication Data: US 2018/0265086 A1, Sep. 20, 2018
+
+ABSTRACT
+
+A driving assistance system and method for active vehicle control that predicts and mitigates collision risk in complex multi-agent traffic environments. The system employs a probabilistic risk field model that represents the dynamic interaction space between a host vehicle and surrounding traffic participants. A multi-layer sensor fusion module aggregates inputs from LIDAR, radar, and camera arrays to construct a real-time occupancy grid. A predictive trajectory planner applies Gaussian process regression over historical motion patterns to anticipate the future states of all tracked agents within a configurable time horizon. When the computed collision probability exceeds a threshold, the system generates corrective control interventions — including differential braking, steering assist, and throttle modulation — scaled proportionally to the severity and imminence of the predicted conflict. The invention enables proactive hazard avoidance rather than purely reactive collision mitigation, particularly in dense urban traffic and at uncontrolled intersections.
+
+BACKGROUND OF THE INVENTION
+
+Modern advanced driver assistance systems (ADAS) have made significant progress in preventing rear-end collisions and lane departure incidents. However, the majority of existing systems operate reactively: they detect an imminent collision and apply emergency braking or steering only after the hazardous condition has materialized. This reactive paradigm is fundamentally limited because it compresses the available response time to fractions of a second and requires the intervention to be both drastic and abrupt.
+
+The prior art discloses several trajectory prediction approaches. U.S. Patent 9,248,834 describes a lane change assist system using optical flow analysis from forward-facing cameras. U.S. Patent 8,670,903 teaches a pedestrian detection algorithm based on infrared thermography. Neither reference addresses the problem of multi-agent probabilistic risk modeling in unstructured environments where vehicles, cyclists, and pedestrians share the same space without clear right-of-way rules.
+
+There is a long-felt need in the art for a driving assistance system that: (1) continuously models the collision risk landscape across all surrounding agents simultaneously; (2) predicts future hazard states with sufficient lead time for gentle, comfortable interventions; (3) adapts its intervention threshold dynamically based on road conditions, driver behavior profile, and traffic density; and (4) communicates its internal risk representation to the driver in an interpretable manner without causing alarm fatigue.
+
+SUMMARY OF THE INVENTION
+
+The present invention provides a driving assistance technique comprising: a multi-modal sensor fusion layer that produces a unified environmental model; a probabilistic risk field generator that assigns collision probability distributions over a discretized spatial grid surrounding the host vehicle; a trajectory prediction engine utilizing Gaussian process regression parameterized on historical traffic flow data; a risk-aware path planner that generates minimum-risk trajectories subject to comfort and traffic law constraints; and an intervention authority manager that allocates control between the human driver and the automated assistance system as a continuous function of computed risk.
+
+In one embodiment, the probabilistic risk field is represented as a mixture of Gaussian distributions, each centered on a tracked agent, with covariance matrices derived from the uncertainty in sensor measurements and the inherent unpredictability of agent behavior. The total risk at any spatial point is the integral of all contributing Gaussian lobes, weighted by agent velocity and heading variance.
+
+In another embodiment, the trajectory prediction engine operates at two time scales: a short-horizon kinematic predictor (0–1.5 seconds) using constant-turn-rate-and-velocity (CTRV) motion models, and a long-horizon behavioral predictor (1.5–6 seconds) using a recurrent neural network trained on naturalistic driving datasets. The outputs of both predictors are fused using a Kalman filter bank.
+
+CLAIMS
+
+1. A driving assistance system for a host vehicle comprising:
+   a sensor array configured to capture multi-modal environmental data including at least LIDAR point clouds, radar returns, and camera image streams;
+   a sensor fusion module configured to register and combine said multi-modal data into a unified dynamic occupancy grid updated at no less than 10 Hz;
+   a probabilistic risk field generator configured to compute, for each cell of said occupancy grid, a collision probability score as a function of tracked agent states, velocities, and behavioral uncertainty;
+   a trajectory prediction engine configured to generate predicted future trajectories for each tracked agent over a prediction horizon of at least 3 seconds using a combination of kinematic and learned behavioral models;
+   an intervention authority manager configured to compute a continuous intervention weight as a function of the maximum collision probability within the host vehicle's planned path; and
+   an actuation interface configured to apply differential braking, steering torque overlay, and throttle reduction in proportion to said intervention weight.
+
+2. The system of claim 1, wherein the probabilistic risk field generator represents the risk contribution of each tracked agent as an anisotropic Gaussian distribution whose principal axis aligns with the agent's velocity vector and whose covariance scales with the agent's speed and sensor measurement uncertainty.
+
+3. The system of claim 1, wherein the trajectory prediction engine comprises a first kinematic predictor operating on a 0-to-1.5 second horizon using a constant-turn-rate-and-velocity model, and a second behavioral predictor operating on a 1.5-to-6 second horizon using a recurrent neural network, the outputs of said predictors being fused by a Kalman filter bank.
+
+4. The system of claim 1, wherein the intervention authority manager applies a hysteresis function to the intervention weight to prevent oscillatory control behavior near the intervention threshold.
+
+5. The system of claim 1, further comprising a driver behavior profiler configured to adapt the intervention threshold based on the driver's historical reaction time, following distance preferences, and stress indicators derived from biometric sensor data.
+
+6. A method for active vehicle control comprising:
+   continuously fusing sensor data from a plurality of modalities to maintain a real-time dynamic occupancy grid;
+   computing a probabilistic risk field over said occupancy grid based on predicted future states of all tracked traffic agents;
+   generating a minimum-risk trajectory for the host vehicle subject to comfort bounds and applicable traffic regulations;
+   determining an intervention authority weight as a monotonically increasing function of the peak risk along said minimum-risk trajectory; and
+   applying proportional control interventions to vehicle actuators scaled by said intervention authority weight.
+
+7. The method of claim 6, wherein computing the probabilistic risk field comprises assigning each tracked agent a mixture-of-Gaussians risk distribution parameterized by the agent's estimated state vector and a behavioral covariance derived from a database of historical traffic interactions.
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+
+FIG. 1 is a system architecture diagram showing the data flow from sensor array through fusion, risk generation, trajectory planning, and actuation.
+FIG. 2 illustrates a representative probabilistic risk field overlaid on a top-down view of a four-way intersection scenario.
+FIG. 3 is a block diagram of the trajectory prediction engine showing the parallel kinematic and behavioral prediction branches and their Kalman filter fusion.
+FIG. 4 shows intervention authority curves for three driver behavior profiles (cautious, normal, aggressive) as a function of peak risk probability.
+FIG. 5 is a flowchart of the intervention authority manager's hysteresis logic.
