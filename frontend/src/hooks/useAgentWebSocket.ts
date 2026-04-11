@@ -3,10 +3,14 @@ import { AgentId, AgentState, AnalysisResults } from '../types'
 
 const AGENT_IDS: AgentId[] = ['agent1', 'agent2', 'agent3', 'agent4', 'agent5']
 
-const initialAgentStates = (): Record<AgentId, AgentState> =>
-  Object.fromEntries(
-    AGENT_IDS.map(id => [id, { status: 'idle' as const, messages: [], data: null }])
-  ) as Record<AgentId, AgentState>
+const initialAgentStates = (): Record<AgentId, AgentState> => ({
+  agent1: { status: 'idle', messages: [], data: null },
+  agent2: { status: 'idle', messages: [], data: null },
+  agent3: { status: 'idle', messages: [], data: null },
+  agent4: { status: 'idle', messages: [], data: null },
+  agent5: { status: 'idle', messages: [], data: null },
+  system: { status: 'idle', messages: [], data: null },
+})
 
 export function useAgentWebSocket() {
   const [agentStates, setAgentStates] = useState<Record<AgentId, AgentState>>(initialAgentStates())
